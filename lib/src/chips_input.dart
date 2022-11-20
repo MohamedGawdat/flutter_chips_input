@@ -15,13 +15,15 @@ typedef ChipsBuilder<T> = Widget Function(
 const kObjectReplacementChar = 0xFFFD;
 
 extension on TextEditingValue {
-  String get normalCharactersText => String.fromCharCodes(
+  String get normalCharactersText =>
+      String.fromCharCodes(
         text.codeUnits.where((ch) => ch != kObjectReplacementChar),
       );
 
-  List<int> get replacementCharacters => text.codeUnits
-      .where((ch) => ch == kObjectReplacementChar)
-      .toList(growable: false);
+  List<int> get replacementCharacters =>
+      text.codeUnits
+          .where((ch) => ch == kObjectReplacementChar)
+          .toList(growable: false);
 
   int get replacementCharactersCount => replacementCharacters.length;
 }
@@ -51,8 +53,9 @@ class ChipsInput<T> extends StatefulWidget {
     this.allowChipEditing = false,
     this.focusNode,
     this.initialSuggestions,
-       this.customWidget,
-  })  : assert(maxChips == null || initialValue.length <= maxChips),
+    this.customWidget,
+  })
+      : assert(maxChips == null || initialValue.length <= maxChips),
         super(key: key);
 
   final InputDecoration decoration;
@@ -76,7 +79,8 @@ class ChipsInput<T> extends StatefulWidget {
   final bool allowChipEditing;
   final FocusNode? focusNode;
   final List<T>? initialSuggestions;
-final Widget? customWidget;
+  final Widget? customWidget;
+
   // final Color cursorColor;
 
   final TextCapitalization textCapitalization;
@@ -90,7 +94,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
   Set<T> _chips = <T>{};
   List<T?>? _suggestions;
   final StreamController<List<T?>?> _suggestionsStreamController =
-      StreamController<List<T>?>.broadcast();
+  StreamController<List<T>?>.broadcast();
   int _searchId = 0;
   TextEditingValue _value = const TextEditingValue();
   TextInputConnection? _textInputConnection;
@@ -98,7 +102,8 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
   final _layerLink = LayerLink();
   final Map<T?, String> _enteredTexts = <T, String>{};
 
-  TextInputConfiguration get textInputConfiguration => TextInputConfiguration(
+  TextInputConfiguration get textInputConfiguration =>
+      TextInputConfiguration(
         inputType: widget.inputType,
         obscureText: widget.obscureText,
         autocorrect: widget.autocorrect,
@@ -115,6 +120,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
       widget.maxChips != null && _chips.length >= widget.maxChips!;
 
   FocusNode? _focusNode;
+
   FocusNode get _effectiveFocusNode =>
       widget.focusNode ?? (_focusNode ??= FocusNode());
   late FocusAttachment _nodeAttachment;
@@ -196,7 +202,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
         final showTop = topAvailableSpace > bottomAvailableSpace;
         // print("showTop: $showTop" );
         final compositedTransformFollowerOffset =
-            showTop ? Offset(0, -size.height) : Offset.zero;
+        showTop ? Offset(0, -size.height) : Offset.zero;
 
         return StreamBuilder<List<T?>?>(
           stream: _suggestionsStreamController.stream,
@@ -216,10 +222,10 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
                     itemBuilder: (BuildContext context, int index) {
                       return _suggestions != null
                           ? widget.suggestionBuilder(
-                              context,
-                              this,
-                              _suggestions![index] as T,
-                            )
+                        context,
+                        this,
+                        _suggestions![index] as T,
+                      )
                           : Container();
                     },
                   ),
@@ -234,9 +240,9 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
                   child: !showTop
                       ? suggestionsListView
                       : FractionalTranslation(
-                          translation: const Offset(0, -1),
-                          child: suggestionsListView,
-                        ),
+                    translation: const Offset(0, -1),
+                    child: suggestionsListView,
+                  ),
                 ),
               );
             }
@@ -289,7 +295,10 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
     Future.delayed(const Duration(milliseconds: 300), () {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         final renderBox = context.findRenderObject() as RenderBox;
-        await Scrollable.of(context)?.position.ensureVisible(renderBox);
+        await Scrollable
+            .of(context)
+            ?.position
+            .ensureVisible(renderBox);
       });
     });
   }
@@ -298,7 +307,8 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
     final localId = ++_searchId;
     final results = await widget.findSuggestions(value);
     if (_searchId == localId && mounted) {
-      setState(() => _suggestions =
+      setState(() =>
+      _suggestions =
           results.where((r) => !_chips.contains(r)).toList(growable: false));
     }
     _suggestionsStreamController.add(_suggestions ?? []);
@@ -325,7 +335,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
           oldTextEditingValue.replacementCharactersCount) {
         final removedChip = _chips.last;
         setState(() =>
-            _chips = Set.of(_chips.take(value.replacementCharactersCount)));
+        _chips = Set.of(_chips.take(value.replacementCharactersCount)));
         widget.onChanged(_chips.toList(growable: false));
         String? putText = '';
         if (widget.allowChipEditing && _enteredTexts.containsKey(removedChip)) {
@@ -333,7 +343,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
           _enteredTexts.remove(removedChip);
         }
         _updateTextInputState(putText: putText);
-      } 
+      }
 //         else {
 //         _updateTextInputState();
 //       }
@@ -347,12 +357,13 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
           String.fromCharCodes(_chips.map((_) => kObjectReplacementChar)) +
               (replaceText ? '' : _value.normalCharactersText) +
               putText;
-      setState(() => _value = _value.copyWith(
-            text: updatedText,
-            selection: TextSelection.collapsed(offset: updatedText.length),
-            //composing: TextRange(start: 0, end: text.length),
-            composing: TextRange.empty,
-          ));
+      setState(() =>
+      _value = _value.copyWith(
+        text: updatedText,
+        selection: TextSelection.collapsed(offset: updatedText.length),
+        //composing: TextRange(start: 0, end: text.length),
+        composing: TextRange.empty,
+      ));
     }
     _closeInputConnectionIfNeeded(); //Hack for #34 (https://github.com/danvick/flutter_chips_input/issues/34#issuecomment-684505282). TODO: Find permanent fix
     _textInputConnection ??= TextInput.attach(this, textInputConfiguration);
@@ -468,11 +479,11 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
                 decoration: widget.decoration,
                 isFocused: _effectiveFocusNode.hasFocus,
                 isEmpty: _value.text.isEmpty && _chips.isEmpty,
-                child: Wrap(
+                child: widget.customWidget ?? Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 4.0,
                   runSpacing: 4.0,
-                  children: widget.customWidget ?? chipsChildren,
+                  children: chipsChildren,
                 ),
               ),
             ),

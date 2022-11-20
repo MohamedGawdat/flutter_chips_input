@@ -209,7 +209,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
                   constraints: BoxConstraints(
                     maxHeight: suggestionBoxHeight,
                   ),
-                  child:widget.customWidget ?? ListView.builder(
+                  child: ListView.builder(
                     shrinkWrap: true,
                     padding: EdgeInsets.zero,
                     itemCount: snapshot.data!.length,
@@ -468,7 +468,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
                 decoration: widget.decoration,
                 isFocused: _effectiveFocusNode.hasFocus,
                 isEmpty: _value.text.isEmpty && _chips.isEmpty,
-                child: Wrap(
+                child: widget.customWidget ?? Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 4.0,
                   runSpacing: 4.0,

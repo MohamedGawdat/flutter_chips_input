@@ -468,11 +468,11 @@ class ChipsInputState<T> extends State<ChipsInput<T>>
                 decoration: widget.decoration,
                 isFocused: _effectiveFocusNode.hasFocus,
                 isEmpty: _value.text.isEmpty && _chips.isEmpty,
-                child: widget.customWidget ?? Wrap(
+                child: Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 4.0,
                   runSpacing: 4.0,
-                  children: chipsChildren,
+                  children: widget.customWidget ?? chipsChildren,
                 ),
               ),
             ),
